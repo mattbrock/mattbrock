@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>get_Flickr_faves</string>
+  <key>Program</key>
+  <string>/Users/USERNAME/Library/Scripts/get_Flickr_faves.sh</string>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Minute</key>
+    <integer>15</integer>
+    <key>Hour</key>
+    <integer>15</integer>
+  </dict>
+  <key>Debug</key>
+  <true/>
+  <key>AbandonProcessGroup</key>
+  <true/>
+</dict>
+</plist>
