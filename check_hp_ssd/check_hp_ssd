@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Needs the HP software hpssaducli to be installed
+# Also needs dos2unix
+
+cd /tmp
+rm -f ssd.txt
+/usr/sbin/hpssaducli -ssd -txt -f ssd.txt
+dos2unix -o ssd.txt
+statuses=$(grep "Status" ssd.txt | awk '{print $2}')
+for status in $statuses ; do
+  if [ "$status" != "OK" ] ; then
+    echo "SSD CRITICAL - status NOT OK on at least one SSD"
+    exit 2
+  fi
+done
+echo "SSD OK - status OK on all SSDs"
