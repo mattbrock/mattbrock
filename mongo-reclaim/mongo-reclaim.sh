@@ -39,20 +39,23 @@ echo " done"
 
 # Clear data on secondary
 echo -n "$(date +'%Y-%m-%d %H-%M-%S') Clearing data on $secondary..."
-ssh -q $secondary "sudo -n /sbin/service mongod stop > /dev/null"
+timeout 300 ssh -q $secondary "sudo -n /sbin/service mongod stop > /dev/null"
 if [ "$?" != "0" ] ; then echo " Problem stopping mongod on $secondary" ; exit 1 ; fi
-ssh -q $secondary "rm -rf /var/lib/mongo/*"
-ssh -q $secondary "sudo -n /sbin/service mongod start > /dev/null"
+timeout 300 ssh -q $secondary "rm -rf /var/lib/mongo/*"
+if [ "$?" != "0" ] ; then echo " Problem clearing /var/lib/mongo on $secondary" ; exit 1 ; fi
+timeout 300 ssh -q $secondary "sudo -n /sbin/service mongod start > /dev/null"
 if [ "$?" != "0" ] ; then echo " Problem starting mongod on $secondary" ; exit 1 ; fi
 echo " done"
 
 # Wait for secondary to come back up
-issecondary=$(ssh -q $secondary "echo 'db.isMaster()' | mongo" | grep secondary | awk -F '[ ,]' '{print $3}')
+issecondary=$(timeout 300 ssh -q $secondary "echo 'db.isMaster()' | mongo" | grep secondary | awk -F '[ ,]' '{print $3}')
+if [ "$?" != "0" ] ; then echo " Problem getting isMaster status on $secondary" ; exit 1 ; fi
 echo -n "$(date +'%Y-%m-%d %H-%M-%S') Waiting for $secondary to come up..."
 until [ "$issecondary" == "true" ] ; do
   sleep 5
   echo -n "."
-  issecondary=$(ssh -q $secondary "echo 'db.isMaster()' | mongo" | grep secondary | awk -F '[ ,]' '{print $3}')
+  issecondary=$(timeout 300 ssh -q $secondary "echo 'db.isMaster()' | mongo" | grep secondary | awk -F '[ ,]' '{print $3}')
+  if [ "$?" != "0" ] ; then echo " Problem getting isMaster status on $secondary" ; exit 1 ; fi
 done
 echo " done"
 
@@ -93,7 +96,7 @@ echo " done"
 
 # Demote secondary so primary is master
 echo -n "$(date +'%Y-%m-%d %H-%M-%S') Demoting $secondary..."
-ssh -q $secondary "echo 'rs.stepDown()' | mongo --quiet > /dev/null"
+timeout 300 ssh -q $secondary "echo 'rs.stepDown()' | mongo --quiet > /dev/null"
 if [ "$?" != "0" ] ; then echo " Problem demoting $secondary" ; exit 1 ; fi
 echo " done"
 
