@@ -11,7 +11,7 @@ tmpfile3=/tmp/${prog}.tmp3
 nmap -sn 192.168.1.* | grep "MAC Address:" | awk '{print $3}' | tr '[:upper:]' '[:lower:]' | sort > $tmpfile1
 
 # Just create the data file if this is the first run
-if [ ! -f $datfile ] ; then mv $tmpfile1 $datfile ; exit ; fi
+if [ ! -f $datfile ] ; then mv $tmpfile1 $datfile ; rm -f $tmpfile1 ; exit ; fi
 
 # Determine if any new MAC addresses have appeared
 diff $datfile $tmpfile1 | egrep "^> " | awk '{print $2}' > $tmpfile2
