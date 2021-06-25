@@ -2,7 +2,7 @@
 
 GitHub repository for my various scripts, most of which have accompanying articles describing their usage on [my blog](https://cetre.co.uk/blog/).
 
-* [check_hp_ssd](../../tree/master/check_hp_ssd) - Nagios plugin to check SSDs on HP ProLiant DL360 servers and other similar ProLiant hardware.
+* [check_hp_ssd](check_hp_ssd) - Nagios plugin to check SSDs on HP ProLiant DL360 servers and other similar ProLiant hardware.
 * [convert-facebook-likes-to-csv](../../tree/master/convert-facebook-likes-to-csv) - Perl script to convert all liked pages on Facebook to a CSV file for import into a spreadsheet.
 * [extract_pgsql_sorts](../../tree/master/extract_pgsql_sorts) - extract the details of PostgreSQL temporary files (disk-based sorts) into a more useful format.
 * [get_Flickr_faves](../../tree/master/get_Flickr_faves) - Bash script and accompanying launchd configuration for using Flickr favourites as a screensaver on OS X.
