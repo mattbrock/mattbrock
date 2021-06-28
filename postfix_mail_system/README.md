@@ -1,6 +1,6 @@
 # Postfix-based mail system
 
-These are the accompanying config files and scripts for my blog post [building a Postfix-based mail system for incoming and outgoing email, capable of successfully sending one million emails per day](foo.bar). There are five folders containing files which I've given installation locations for below. For explanations of what these are and how they're used, please refer to the blog post.
+These are the accompanying config files and scripts for my blog article [building a Postfix-based mail system for incoming and outgoing email, capable of successfully sending one million emails per day](https://cetre.co.uk/blog/building-a-postfix-based-mail-system-for-incoming-and-outgoing-email-capable-of-successfully-sending-one-million-emails-per-day/). There are five folders containing files which I've given installation locations for below. For explanations of what these are and how they're used, please refer to the blog post.
 
 ## [postfix](postfix)
 
