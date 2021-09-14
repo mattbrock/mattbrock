@@ -1,0 +1,74 @@
+---
+- name: Harden CentOS 7 server (OS changes)
+  hosts: centosservers
+  become: yes
+  tasks:
+  - name: Improve IP security
+    copy:
+      src: sysctl/10-network-security.conf
+      dest: /etc/sysctl.d/10-network-security.conf
+  - name: Reload sysctl
+    command: sysctl --system
+  - name: Install EPEL
+    yum:
+      name: epel-release
+      state: present
+  - name: Install rootkit checker
+    yum:
+      name: rkhunter
+      state: present
+  - name: Check if daily cron file exists
+    stat:
+      path: /etc/cron.daily/rkhunter
+    register: cronfile
+  - name: Alter cron frequency from daily to weekly
+    copy:
+      src: /etc/cron.daily/rkhunter
+      dest: /etc/cron.weekly/rkhunter
+      remote_src: yes
+      mode: 0755
+    when: cronfile.stat.exists
+  - name: Remove daily cron file
+    file:
+      path: /etc/cron.daily/rkhunter
+      state: absent
+    when: cronfile.stat.exists
+  - name: Install Logwatch
+    yum:
+      name: logwatch
+      state: present
+  - name: Check if daily cron file exists
+    stat:
+      path: /etc/cron.daily/0logwatch
+    register: cronfile
+  - name: Alter cron frequency from daily to weekly
+    copy:
+      src: /etc/cron.daily/0logwatch
+      dest: /etc/cron.weekly/0logwatch
+      remote_src: yes
+      mode: 0755
+    when: cronfile.stat.exists
+  - name: Remove daily cron file
+    file:
+      path: /etc/cron.daily/0logwatch
+      state: absent
+    when: cronfile.stat.exists
+  - name: Improve logwatch output
+    lineinfile:
+      path: /etc/cron.weekly/0logwatch
+      regexp: '^\$LOGWATCH_SCRIPT \$OPTIONS'
+      line: $LOGWATCH_SCRIPT $OPTIONS --range 'between -7 days and -1 days'
+  - name: Install process accounting
+    yum:
+      name: psacct
+      state: present
+  - name: Enable process accounting
+    service:
+      name: psacct
+      enabled: yes
+      state: started
+  - name: Install psacct summary script
+    get_url: 
+      url: https://raw.githubusercontent.com/mattbrock/mattbrock/master/pacct-report/pacct-report
+      dest: /etc/cron.weekly/pacct-report
+      mode: 0755

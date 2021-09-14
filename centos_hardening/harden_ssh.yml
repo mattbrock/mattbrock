@@ -1,0 +1,19 @@
+---
+- name: Harden CentOS 7 server (SSH changes)
+  hosts: centosservers
+  become: yes
+  tasks:
+  - name: Change SSH port
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^[#]?Port '
+      line: Port 1022
+  - name: Disable root login
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^[#]?PermitRootLogin '
+      line: PermitRootLogin no
+  - name: Reload SSH
+    service:
+      name: sshd
+      state: reloaded
