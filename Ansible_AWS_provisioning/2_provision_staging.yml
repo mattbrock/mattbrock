@@ -1,0 +1,48 @@
+---
+- name: Provision Staging instance
+  hosts: localhost
+  connection: local
+  #become: yes
+  #vars:
+  #  vpc_id: vpc-dde5d7b5
+  #  subnet_id: subnet-0f91d175
+  #  al2_image_id: ami-02f5781cba46a5e8a # Current AMI ID for Amazon Linux 2
+  tasks:
+
+  - name: Import variables
+    include_vars: etc/variables.yml
+
+#  - name: Halt playbook
+#    meta: end_play
+
+  - name: Launch Staging instance
+    ec2_instance:
+      name: Staging
+      key_name: "{{ ec2_key_name }}"
+      vpc_subnet_id: "{{ vpc_subnet_id }}"
+      instance_type: t2.micro
+      security_group: "{{ ec2_sg_app_id }}"
+      network:
+        assign_public_ip: true
+      image_id: "{{ ec2_al2_image_id }}"
+      tags:
+        Environment: Staging
+    register: staging_instance
+
+  #- name: Display variable
+  #  debug:
+  #    var: staging_instance
+      
+  - name: Update variables file with instance ID
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_staging_instance_id:'
+      line: "ec2_staging_instance_id: {{ staging_instance.instances[0].instance_id }}"
+    when: staging_instance.changed
+
+  - name: Update variables file with instance public DNS
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_staging_instance_public_dns:'
+      line: "ec2_staging_instance_public_dns: {{ staging_instance.instances[0].public_dns_name }}"
+    when: staging_instance.changed

@@ -1,0 +1,58 @@
+---
+- name: Provision SSH key and Security Group
+  hosts: localhost
+  connection: local
+  #become: yes
+  #vars:
+  #  vpc_id: vpc-dde5d7b5
+  #  subnet_id: subnet-0f91d175
+  #  al2_image_id: ami-02f5781cba46a5e8a # Current AMI ID for Amazon Linux 2
+  tasks:
+
+  - name: Import variables
+    include_vars: etc/variables.yml
+
+#  - name: Halt playbook
+#    meta: end_play
+
+  - name: Create EC2 SSH key
+    ec2_key:
+      name: EC2-key
+    register: ec2_key
+
+  - name: Save EC2 SSH key to file
+    copy:
+      content: "{{ ec2_key.key.private_key }}"
+      dest: etc/ec2_key.pem
+      mode: 0600
+    when: ec2_key.changed
+
+  - name: Update variables file with EC2 SSH key name
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_key_name:'
+      line: "ec2_key_name: {{ ec2_key.key.name }}"
+    when: ec2_key.changed
+
+  - name: Create Security Group
+    ec2_group:
+      name: EC2 App Servers
+      description: EC2 VPC Security Group for App Servers
+      vpc_id: "{{ vpc_id }}"
+      rules:
+      - proto: tcp
+        ports: 22
+        cidr_ip: 0.0.0.0/0
+        rule_desc: Allow SSH from everywhere
+      - proto: tcp
+        ports: 8080
+        cidr_ip: 0.0.0.0/0
+        rule_desc: Allow app access from everywhere
+    register: ec2_sg_app
+
+  - name: Update variables file with Security Group ID
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_sg_app_id'
+      line: "ec2_sg_app_id: {{ ec2_sg_app.group_id }}"
+    when: ec2_sg_app.changed
