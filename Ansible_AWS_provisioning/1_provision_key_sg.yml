@@ -1,5 +1,5 @@
 ---
-- name: Provision SSH key and Security Group
+- name: Provision SSH key and Security Groups
   hosts: localhost
   connection: local
   #become: yes
@@ -34,25 +34,48 @@
       line: "ec2_key_name: {{ ec2_key.key.name }}"
     when: ec2_key.changed
 
-  - name: Create Security Group
+  - name: Create Security Group for Application Load Balancer
+    ec2_group:
+      name: Application Load Balancer
+      description: EC2 VPC Security Group for Application Load Balancer
+      vpc_id: "{{ vpc_id }}"
+      rules:
+      - proto: tcp
+        ports: 80
+        cidr_ip: 0.0.0.0/0
+        rule_desc: Allow app access from everywhere
+    register: ec2_sg_lb
+
+  - name: Update variables file with Security Group ID
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_sg_lb_id:'
+      line: "ec2_sg_lb_id: {{ ec2_sg_lb.group_id }}"
+    when: ec2_sg_lb.changed
+
+  - name: Create Security Group for app instances
     ec2_group:
       name: EC2 App Servers
       description: EC2 VPC Security Group for App Servers
       vpc_id: "{{ vpc_id }}"
       rules:
       - proto: tcp
-        ports: 22
-        cidr_ip: 0.0.0.0/0
-        rule_desc: Allow SSH from everywhere
+        ports: 8080
+        group_id: "{{ ec2_sg_lb.group_id }}"
+        rule_desc: Allow app access from Application Load Balancer
       - proto: tcp
         ports: 8080
-        cidr_ip: 0.0.0.0/0
-        rule_desc: Allow app access from everywhere
+        cidr_ip: "{{ my_ip }}/32"
+        rule_desc: Allow app access from my IP
+      - proto: tcp
+        ports: 22
+        cidr_ip: "{{ my_ip }}/32"
+        rule_desc: Allow SSH from my IP
     register: ec2_sg_app
 
   - name: Update variables file with Security Group ID
     lineinfile:
       path: etc/variables.yml
-      regex: '^ec2_sg_app_id'
+      regex: '^ec2_sg_app_id:'
       line: "ec2_sg_app_id: {{ ec2_sg_app.group_id }}"
     when: ec2_sg_app.changed

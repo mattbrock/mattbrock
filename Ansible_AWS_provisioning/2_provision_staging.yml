@@ -19,7 +19,7 @@
     ec2_instance:
       name: Staging
       key_name: "{{ ec2_key_name }}"
-      vpc_subnet_id: "{{ vpc_subnet_id }}"
+      vpc_subnet_id: "{{ vpc_subnet_id_1 }}"
       instance_type: t2.micro
       security_group: "{{ ec2_sg_app_id }}"
       network:

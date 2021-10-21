@@ -11,6 +11,19 @@
   - name: Import variables
     include_vars: etc/variables.yml
 
+  - name: Determine if AMI already exists
+    ec2_ami_info:
+      filters:
+        name: Staging
+    register: ami_info
+
+  - name: Delete AMI if it already exists, otherwise creation will fail
+    ec2_ami:
+      state: absent
+      image_id: "{{ ami_info.images[0].image_id }}"
+      delete_snapshot: yes
+    when: ami_info.images[0].image_id is defined
+
   - name: Create AMI
     ec2_ami:
       instance_id: "{{ ec2_staging_instance_id }}"
@@ -28,7 +41,7 @@
       path: etc/variables.yml
       regex: '^ec2_staging_ami_id:'
       line: "ec2_staging_ami_id: {{ staging_ami.image_id }}"
-    #when: staging_instance.changed
+    when: staging_ami.changed
 
 
 
@@ -95,7 +108,7 @@
     ec2_instance:
       name: Staging
       key_name: "{{ ec2_key_name }}"
-      vpc_subnet_id: "{{ vpc_subnet_id }}"
+      vpc_subnet_id: "{{ vpc_subnet_id_1 }}"
       instance_type: t2.micro
       security_group: "{{ ec2_sg_app_id }}"
       network:

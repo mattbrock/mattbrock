@@ -1,0 +1,78 @@
+---
+- name: Provision a Target Group and an Application Load Balancer
+  #vars:
+  #  ansible_ssh_private_key_file: etc/ec2_key.pem
+  #hosts: tag_Environment_Staging
+  hosts: localhost
+  connection: local
+  #remote_user: ec2-user
+  tasks:
+
+  - name: Import variables
+    include_vars: etc/variables.yml
+
+  - name: Create launch template
+    ec2_launch_template:
+      name: simple-webapp
+      image_id: "{{ ec2_staging_ami_id }}"
+      key_name: "{{ ec2_key_name }}"
+      instance_type: t2.micro
+      security_group_ids: sg-03328743982d79924
+
+  - name: Create Auto Scaling group
+    ec2_asg:
+      name: simple-webapp
+      target_group_arns: "{{ elb_tg_arn }}"
+      vpc_zone_identifier:
+      - "{{ vpc_subnet_id_1 }}"
+      - "{{ vpc_subnet_id_2 }}"
+      launch_template:
+        launch_template_name: simple-webapp
+      min_size: 1
+      max_size: 3
+      tags:
+      - Name: Production
+      - Environment: Production
+      replace_all_instances: yes
+
+  - name: Create scaling policy
+    ec2_
+
+
+
+
+
+
+
+
+
+
+
+  - name: Halt playbook
+    meta: end_play
+
+
+
+
+  - name: Provision Target Group
+    elb_target_group:
+      name: simple-webapp
+      protocol: http
+      port: 8080
+      vpc_id: "{{ vpc_id }}"
+      state: present
+    #register: target_group
+
+  - name: Provision Application Load Balancer
+    elb_application_lb:
+      name: simple-webapp
+      security_groups: "{{ ec2_sg_lb_id }}"
+      subnets:
+      - "{{ vpc_subnet_id_1 }}"
+      - "{{ vpc_subnet_id_2 }}"
+      listeners:
+      - Protocol: HTTP
+        Port: 80
+        DefaultActions:
+        - Type: forward
+          TargetGroupName: simple-webapp
