@@ -1,0 +1,10 @@
+---
+# Static hard-coded variables
+ec2_al2_image_id: ami-02f5781cba46a5e8a # Current AMI ID for Amazon Linux 2
+vpc_id:
+vpc_subnet_id:
+# Dynamic variables which get updated automatically from playbooks
+ec2_staging_instance_id:
+ec2_staging_ami_id:
+ec2_key_name:
+ec2_sg_app_id:
