@@ -89,5 +89,5 @@
 
   - name: Delete EC2 SSH key
     ec2_key:
-      name: "{{ ec2_key_name }}"
+      name: "{{ app_name }}"
       state: absent
