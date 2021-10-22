@@ -1,5 +1,5 @@
 ---
-- name: Provision a Target Group and an Application Load Balancer
+- name: Provision an Auto Scaling Group with launch template and scaling policy
   #vars:
   #  ansible_ssh_private_key_file: etc/ec2_key.pem
   #hosts: tag_Environment_Staging
@@ -33,10 +33,15 @@
       tags:
       - Name: Production
       - Environment: Production
-      replace_all_instances: yes
+      #replace_all_instances: yes
+      health_check_period: 60
 
+  # Unfortunately, target tracking policies are not yet supported in the Ansible modules so we have to use the AWS CLI for the time being.
+  # Running this again after the policy is created does not appear to cause any issues or duplicates etc., and modifications are performed as desired.
   - name: Create scaling policy
-    ec2_
+    command:
+      /usr/local/bin/aws autoscaling put-scaling-policy --policy-name simple-webapp --auto-scaling-group-name simple-webapp --policy-type TargetTrackingScaling --target-tracking-configuration file://etc/scaling_policy_config.json --estimated-instance-warmup 60
+      
 
 
 

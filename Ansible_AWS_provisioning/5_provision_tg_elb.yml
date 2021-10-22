@@ -18,6 +18,7 @@
       port: 8080
       vpc_id: "{{ vpc_id }}"
       state: present
+      modify_targets: no
     register: target_group
 
   - name: Update variables file with Target Group ARN
@@ -25,7 +26,6 @@
       path: etc/variables.yml
       regex: '^elb_tg_arn:'
       line: "elb_tg_arn: {{ target_group.target_group_arn }}"
-    when: target_group.changed
 
   - name: Provision Application Load Balancer
     elb_application_lb:
@@ -40,3 +40,31 @@
         DefaultActions:
         - Type: forward
           TargetGroupName: simple-webapp
+        Rules:
+        - Conditions: 
+          - Field: host-header
+            Values: 
+            - "{{ route53_zone }}"
+          Priority: '1'
+          Actions:
+          - Type: redirect
+            RedirectConfig:
+              Host: "www.{{ route53_zone }}"
+              Protocol: "#{protocol}"
+              Port: "#{port}"
+              Path: "/#{path}"
+              Query: "#{query}"
+              StatusCode: "HTTP_301"
+    register: load_balancer
+
+  - name: Update variables file with ELB DNS
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^elb_dns:'
+      line: "elb_dns: {{ load_balancer.dns_name }}"
+
+  - name: Update variables file with ELB hosted zone ID
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^elb_zone_id:'
+      line: "elb_zone_id: {{ load_balancer.canonical_hosted_zone_id }}"

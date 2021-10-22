@@ -1,0 +1,95 @@
+---
+- name: Destroy entire infrastructure
+  hosts: localhost
+  connection: local
+  tasks:
+
+  - name: Import variables
+    include_vars: etc/variables.yml
+
+  - name: Delete DNS record for root
+    route53:
+      state: absent
+      zone: "{{ route53_zone }}"
+      record: "{{ route53_zone }}"
+      type: A
+      value: "{{ elb_dns }}"
+      alias: yes
+      alias_hosted_zone_id: "{{ elb_zone_id }}"
+      alias_evaluate_target_health: yes
+
+  - name: Delete DNS record for www.
+    route53:
+      state: absent
+      zone: "{{ route53_zone }}"
+      record: "www.{{ route53_zone }}"
+      type: A
+      value: "{{ elb_dns }}"
+      alias: yes
+      alias_hosted_zone_id: "{{ elb_zone_id }}"
+      alias_evaluate_target_health: yes
+
+  - name: Delete CNAME record for staging.domain
+    route53:
+      state: absent
+      zone: "{{ route53_zone }}"
+      record: "staging.{{ route53_zone }}"
+      type: CNAME
+      value: "{{ ec2_staging_instance_public_dns }}"
+      ttl: 300
+
+  - name: Delete scaling policy
+  #  command:
+  #    /usr/local/bin/aws autoscaling delete-policy --policy-name simple-webapp --auto-scaling-group-name simple-webapp
+    ec2_scaling_policy:
+      name: simple-webapp
+      state: absent
+
+  - name: Remove Auto Scaling group
+    ec2_asg:
+      name: simple-webapp
+      state: absent
+      wait_for_instances: no
+
+  - name: Remove launch template
+    ec2_launch_template:
+      name: simple-webapp
+      state: absent
+
+  - name: Delete Application Load Balancer
+    elb_application_lb:
+      name: simple-webapp
+      state: absent
+
+  - name: Delete target group
+    elb_target_group:
+      name: simple-webapp
+      state: absent
+
+  - name: Terminate all EC2 instances
+    ec2_instance:
+      state: absent
+      filters:
+        instance-state-name: running
+      wait: no
+
+  - name: Delete Staging AMI
+    ec2_ami:
+      state: absent
+      image_id: "{{ ec2_staging_ami_id }}"
+      delete_snapshot: yes
+
+  - name: Delete Security Group for app instances
+    ec2_group:
+      group_id: "{{ ec2_sg_app_id }}"
+      state: absent
+
+  - name: Delete Security Group for Application Load Balancer
+    ec2_group:
+      group_id: "{{ ec2_sg_lb_id }}"
+      state: absent
+
+  - name: Delete EC2 SSH key
+    ec2_key:
+      name: "{{ ec2_key_name }}"
+      state: absent

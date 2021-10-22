@@ -30,7 +30,7 @@
       owner: ec2-user
       group: ec2-user
 
-  - name: Clone app from GitHub
+  - name: Get app from GitHub
     git:
       repo: "https://github.com/mattbrock/simple_webapp.git"
       dest: /opt/simple_webapp
