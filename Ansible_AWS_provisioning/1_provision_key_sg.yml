@@ -2,22 +2,14 @@
 - name: Provision SSH key and Security Groups
   hosts: localhost
   connection: local
-  #become: yes
-  #vars:
-  #  vpc_id: vpc-dde5d7b5
-  #  subnet_id: subnet-0f91d175
-  #  al2_image_id: ami-02f5781cba46a5e8a # Current AMI ID for Amazon Linux 2
   tasks:
 
   - name: Import variables
     include_vars: etc/variables.yml
 
-#  - name: Halt playbook
-#    meta: end_play
-
   - name: Create EC2 SSH key
     ec2_key:
-      name: EC2-key
+      name: "{{ app_name }}"
     register: ec2_key
 
   - name: Save EC2 SSH key to file
@@ -25,13 +17,6 @@
       content: "{{ ec2_key.key.private_key }}"
       dest: etc/ec2_key.pem
       mode: 0600
-    when: ec2_key.changed
-
-  - name: Update variables file with EC2 SSH key name
-    lineinfile:
-      path: etc/variables.yml
-      regex: '^ec2_key_name:'
-      line: "ec2_key_name: {{ ec2_key.key.name }}"
     when: ec2_key.changed
 
   - name: Create Security Group for Application Load Balancer

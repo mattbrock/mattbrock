@@ -39,31 +39,29 @@
       ttl: 300
 
   - name: Delete scaling policy
-  #  command:
-  #    /usr/local/bin/aws autoscaling delete-policy --policy-name simple-webapp --auto-scaling-group-name simple-webapp
     ec2_scaling_policy:
-      name: simple-webapp
+      name: "{{ app_name }}"
       state: absent
 
   - name: Remove Auto Scaling group
     ec2_asg:
-      name: simple-webapp
+      name: "{{ app_name }}"
       state: absent
       wait_for_instances: no
 
   - name: Remove launch template
     ec2_launch_template:
-      name: simple-webapp
+      name: "{{ app_name }}"
       state: absent
 
   - name: Delete Application Load Balancer
     elb_application_lb:
-      name: simple-webapp
+      name: "{{ app_name }}"
       state: absent
 
   - name: Delete target group
     elb_target_group:
-      name: simple-webapp
+      name: "{{ app_name }}"
       state: absent
 
   - name: Terminate all EC2 instances

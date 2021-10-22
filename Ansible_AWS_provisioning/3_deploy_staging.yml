@@ -4,7 +4,6 @@
     ansible_ssh_private_key_file: etc/ec2_key.pem
   hosts: tag_Environment_Staging
   remote_user: ec2-user
-  #become: yes
   tasks:
 
   - name: Import variables
@@ -45,11 +44,6 @@
       owner: root
       group: root
 
-#  - name: Remove systemd unit file from original location
-#    file:
-#      path: /opt/simple_webapp/simple-webapp.service
-#      state: absent
-
   - name: Reload systemd
     become: yes
     systemd:
@@ -61,40 +55,3 @@
       name: simple-webapp
       enabled: yes
       state: restarted
-      
-    
-
-  - name: Halt playbook
-    meta: end_play
-
-  - name: Launch Staging instance
-    ec2_instance:
-      name: Staging
-      key_name: "{{ ec2_key_name }}"
-      vpc_subnet_id: "{{ vpc_subnet_id_1 }}"
-      instance_type: t2.micro
-      security_group: "{{ ec2_sg_app_id }}"
-      network:
-        assign_public_ip: true
-      image_id: "{{ ec2_al2_image_id }}"
-      tags:
-        Environment: Staging
-    register: staging_instance
-
-  #- name: Display variable
-  #  debug:
-  #    var: staging_instance
-      
-  - name: Update variables file with instance ID
-    lineinfile:
-      path: etc/variables.yml
-      regex: '^ec2_staging_instance_id:'
-      line: "ec2_staging_instance_id: {{ staging_instance.instances[0].instance_id }}"
-    when: staging_instance.changed
-
-  - name: Update variables file with instance public DNS
-    lineinfile:
-      path: etc/variables.yml
-      regex: '^ec2_staging_instance_public_dns:'
-      line: "ec2_staging_instance_public_dns: {{ staging_instance.instances[0].public_dns_name }}"
-    when: staging_instance.changed
