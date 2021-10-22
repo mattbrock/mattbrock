@@ -12,12 +12,6 @@
       zone: "{{ route53_zone }}"
     register: dns_zone
 
-  - name: Update variables file with zone ID
-    lineinfile:
-      path: etc/variables.yml
-      regex: '^route53_zone_id:'
-      line: "route53_zone_id: {{ dns_zone.zone_id }}"
-
   - name: Add an alias record for root
     route53:
       state: present
