@@ -7,11 +7,6 @@
   - name: Import variables
     include_vars: etc/variables.yml
 
-  - name: Create zone
-    route53_zone:
-      zone: "{{ route53_zone }}"
-    register: dns_zone
-
   - name: Add an alias record for root
     route53:
       state: present

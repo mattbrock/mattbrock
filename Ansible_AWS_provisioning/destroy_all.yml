@@ -59,10 +59,28 @@
       name: "{{ app_name }}"
       state: absent
 
+  - name: Remove ELB DNS from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^elb_dns:'
+      line: "elb_dns:"
+
+  - name: Remove ELB Zone ID from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^elb_zone_id:'
+      line: "elb_zone_id:"
+
   - name: Delete target group
     elb_target_group:
       name: "{{ app_name }}"
       state: absent
+
+  - name: Remove target group ARN from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^elb_tg_arn:'
+      line: "elb_tg_arn:"
 
   - name: Terminate all EC2 instances
     ec2_instance:
@@ -71,21 +89,51 @@
         instance-state-name: running
       wait: no
 
+  - name: Remove Staging instance ID from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_staging_instance_id:'
+      line: "ec2_staging_instance_id:"
+
+  - name: Remove Staging instance public DNS from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_staging_instance_public_dns:'
+      line: "ec2_staging_instance_public_dns:"
+
   - name: Delete Staging AMI
     ec2_ami:
       state: absent
       image_id: "{{ ec2_staging_ami_id }}"
       delete_snapshot: yes
 
+  - name: Remove Staging AMI ID from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_staging_ami_id:'
+      line: "ec2_staging_ami_id:"
+
   - name: Delete Security Group for app instances
     ec2_group:
       group_id: "{{ ec2_sg_app_id }}"
       state: absent
 
+  - name: Remove app instances Security Group from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_sg_app_id:'
+      line: "ec2_sg_app_id:"
+
   - name: Delete Security Group for Application Load Balancer
     ec2_group:
       group_id: "{{ ec2_sg_lb_id }}"
       state: absent
+
+  - name: Remove ELB Security Group from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_sg_lb_id:'
+      line: "ec2_sg_lb_id:"
 
   - name: Delete EC2 SSH key
     ec2_key:
