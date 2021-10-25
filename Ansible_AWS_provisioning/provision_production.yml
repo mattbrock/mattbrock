@@ -13,7 +13,7 @@
       image_id: "{{ ec2_staging_ami_id }}"
       key_name: "{{ app_name }}"
       instance_type: t2.micro
-      security_group_ids: sg-03328743982d79924
+      security_group_ids: "{{ ec2_sg_app_id }}"
     when: ec2_staging_ami_id
 
   - name: Create Auto Scaling group
