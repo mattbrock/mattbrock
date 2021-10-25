@@ -31,6 +31,8 @@
       - Name: Production
       - Environment: Production
       health_check_period: 60
+      replace_all_instances: yes
+      wait_for_instances: no
 
   # Unfortunately, target tracking policies are not yet supported in the Ansible modules so we have to use the AWS CLI for the time being.
   # Running this again after the policy is created does not appear to cause any issues or duplicates etc., and modifications are performed as desired.
