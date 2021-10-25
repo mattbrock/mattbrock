@@ -1,0 +1,53 @@
+---
+- name: Delete dynamic variables from variables file
+  hosts: localhost
+  connection: local
+  tasks:
+
+  - name: Remove ELB DNS from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^elb_dns:'
+      line: "elb_dns:"
+
+  - name: Remove ELB Zone ID from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^elb_zone_id:'
+      line: "elb_zone_id:"
+
+  - name: Remove target group ARN from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^elb_tg_arn:'
+      line: "elb_tg_arn:"
+
+  - name: Remove Staging instance ID from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_staging_instance_id:'
+      line: "ec2_staging_instance_id:"
+
+  - name: Remove Staging instance public DNS from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_staging_instance_public_dns:'
+      line: "ec2_staging_instance_public_dns:"
+
+  - name: Remove Staging AMI ID from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_staging_ami_id:'
+      line: "ec2_staging_ami_id:"
+
+  - name: Remove app instances Security Group from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_sg_app_id:'
+      line: "ec2_sg_app_id:"
+
+  - name: Remove ELB Security Group from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_sg_lb_id:'
+      line: "ec2_sg_lb_id:"
