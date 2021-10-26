@@ -1,5 +1,5 @@
 ---
-- name: Delete dynamic variables from variables file
+- name: Delete dynamic variables and SSH key file
   hosts: localhost
   connection: local
   tasks:
@@ -51,3 +51,8 @@
       path: etc/variables.yml
       regex: '^ec2_sg_lb_id:'
       line: "ec2_sg_lb_id:"
+
+  - name: Delete SSH key file
+    file:
+      path: etc/ec2_key.pem
+      state: absent
