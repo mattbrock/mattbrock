@@ -1,0 +1,18 @@
+---
+- name: Provision DNS
+  hosts: localhost
+  connection: local
+  tasks:
+
+  - name: Import variables
+    include_vars: etc/variables.yml
+
+  - name: Add a CNAME record for staging.domain
+    route53:
+      state: present
+      zone: "{{ route53_zone }}"
+      record: "staging.{{ route53_zone }}"
+      type: CNAME
+      value: "{{ ec2_staging_instance_public_dns }}"
+      ttl: 300
+      overwrite: yes

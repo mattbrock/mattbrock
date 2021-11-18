@@ -1,0 +1,88 @@
+---
+- name: Deploy app on Staging instance
+  vars:
+    ansible_ssh_private_key_file: etc/ec2_key.pem
+  hosts: tag_Environment_Staging
+  remote_user: ec2-user
+  tasks:
+
+  - name: Import variables
+    include_vars: etc/variables.yml
+
+  - name: Update OS
+    become: yes
+    yum:
+      name: "*"
+      state: latest
+
+  # This is necessary to be able to use yum to install Docker and nginx
+  # There doesn't seem to be an Ansible module for amazon-linux-extras
+  # so am using the command module for now instead
+  - name: Enable necessary amazon-linux-extras repositories
+    become: yes
+    command: amazon-linux-extras enable docker nginx1
+
+  - name: Install nginx
+    become: yes
+    yum:
+      name: nginx
+      state: latest
+
+  - name: Deploy nginx config for proxying through to Docker container
+    become: yes
+    copy:
+      src: "etc/{{ app_name}}.conf"
+      dest: "/etc/nginx/default.d/{{ app_name}}.conf"
+
+  - name: Enable and start nginx
+    become: yes
+    service:
+      name: nginx
+      enabled: yes
+      state: started
+
+  - name: Install Docker
+    become: yes
+    yum:
+      name: docker
+      state: latest
+
+  - name: Install Docker module for Python
+    pip:
+      executable: pip3
+      name: docker
+
+  - name: Enable and start Docker service
+    become: yes
+    service:
+      name: docker
+      enabled: yes
+      state: started
+
+  - name: Add user to docker group
+    become: yes
+    user:
+      name: ec2-user
+      groups: docker
+
+  - name: Reset SSH connection so group change takes effect
+    meta: reset_connection
+
+  - name: Log in to Docker Hub
+    docker_login:
+      username: "{{ docker_user }}"
+      password: "{{ docker_pass }}"
+
+  - name: Pull Docker image
+    docker_image:
+      name: "{{ docker_repo }}/{{ app_name }}"
+      source: pull
+      force_source: yes
+
+  - name: Run Docker container
+    docker_container:
+      image: "{{ docker_repo }}/{{ app_name }}"
+      name: "{{ app_name }}"
+      detach: yes
+      published_ports: 8080:8080
+      state: started

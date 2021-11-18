@@ -1,0 +1,35 @@
+---
+- name: Delete dynamic variables, SSH key file, local Docker image and local app repo
+  hosts: localhost
+  connection: local
+  tasks:
+
+  - name: Import variables
+    include_vars: etc/variables.yml
+
+  - name: Remove Staging instance public DNS from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_staging_instance_public_dns:'
+      line: "ec2_staging_instance_public_dns:"
+
+  - name: Remove app instances Security Group from variables file
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_sg_app_id:'
+      line: "ec2_sg_app_id:"
+
+  - name: Delete SSH key file
+    file:
+      path: etc/ec2_key.pem
+      state: absent
+
+  - name: Remove local Docker image
+    docker_image:
+      name: "{{ docker_repo }}/{{ app_name }}"
+      state: absent
+
+  - name: Delete local app repo folder
+    file:
+      path: "./{{ app_name }}"
+      state: absent

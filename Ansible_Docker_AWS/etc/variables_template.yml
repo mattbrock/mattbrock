@@ -1,0 +1,14 @@
+---
+# Static hard-coded variables (change these as needed)
+app_name: simple-webapp # Can be changed if using with a different app
+docker_pass: xxxxxx # Docker Hub password
+docker_repo: xxxxxx # Docker Hub repository
+docker_user: xxxxxx # Docker Hub username
+ec2_al2_image_id: ami-02f5781cba46a5e8a # Current AMI ID for Amazon Linux 2
+my_ip: 1.2.3.4 # IP of home or work address to restrict access in security rules
+route53_zone: yourdomain.com # Name of DNS domain set up in Route 53 for this app
+vpc_id: vpc-xxxxxxxx # VPC ID for use with this app
+vpc_subnet_id: subnet-xxxxxxxx # Main subnet for use with this app
+# Dynamic variables which get updated automatically from playbooks
+ec2_sg_app_id:
+ec2_staging_instance_public_dns:

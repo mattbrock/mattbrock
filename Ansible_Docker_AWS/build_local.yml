@@ -1,0 +1,28 @@
+---
+- name: Build Docker image locally
+  hosts: localhost
+  connection: local
+  tasks:
+
+  - name: Import variables
+    include_vars: etc/variables.yml
+
+  - name: Get app from GitHub
+    git:
+      repo: "https://github.com/mattbrock/simple_webapp.git"
+      dest: "docker/{{ app_name }}"
+      force: yes
+
+  - name: Log in to Docker Hub repo
+    docker_login:
+      username: "{{ docker_user }}"
+      password: "{{ docker_pass }}"
+
+  - name: Build Docker image and push to Docker Hub repo
+    docker_image:
+      build:
+        path: ./docker
+      name: "{{ docker_repo }}/{{ app_name }}"
+      push: yes
+      source: build
+      force_source: yes
