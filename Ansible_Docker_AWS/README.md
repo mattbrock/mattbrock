@@ -113,4 +113,4 @@ You can use this method to check the Docker webapp logs as follows:
 
 If you need to SSH into the Staging instance once it's running after Step 3, get the public DNS name using the command above, then SSH in with:
 
-`ssh -i etc/ec2_key.pem ec2-user@ec2-xxx-xxx-xxx-xxx.xx-xxxx-x.compute.amazonaws.com`
+`ssh -i etc/ec2_key.pem ec2-user@ec2-xxx-xxx-xxx-xxx.xx-xxxx-x.compute.amazonaws.com` 
