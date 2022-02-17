@@ -4,6 +4,7 @@
 
 * User needs Kubernetes Engine Admin permissions in IAM.
 * GKS cluster set up, and kubectl installed and configured, as described in [provision-cluster](../provision-cluster).
+* Domain set up in Cloud DNS.
 
 ## ingress-nginx
 

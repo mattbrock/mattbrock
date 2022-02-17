@@ -5,6 +5,7 @@
 * User needs Kubernetes Engine Admin permissions in IAM.
 * GKS cluster set up, and kubectl installed and configured, as described in [provision-cluster](../provision-cluster).
 * cert-manager setup complete, as described in [cert-manager](../cert-manager).
+* Domain set up in Cloud DNS.
 
 ## Manually creating a self-signed certificate (not needed now, so ignore)
 
