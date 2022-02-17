@@ -101,4 +101,4 @@ To run ad hoc commands (e.g. `uptime` in this example) remotely with Ansible (wi
 
 `ansible -i etc/inventory.aws_ec2.yml -u ec2-user --private-key etc/ec2_key.pem tag_Environment_Staging -m shell -a uptime`
 
-That can be used for the Staging instance. To run the command on all the Production instances at once, replace "tag_Environment_Staging" with "tag_Environment_Production".
+That can be used for the Staging instance. To run the command on all the Production instances at once, replace "tag_Environment_Staging" with "tag_Environment_Production". 
