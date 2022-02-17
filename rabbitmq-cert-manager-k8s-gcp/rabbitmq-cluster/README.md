@@ -52,7 +52,7 @@ setting up an issuer in cert-manager using something other than letsencrypt so w
 
 ## Test that RabbitMQ connections are working (optional)
 
-Install and run PerfTest:
+Install and run PerfTest (change username, password, hostname and virtualhost as needed in the URI):
 
     kubectl run perf-test --image=pivotalrabbitmq/perf-test -- --uri "amqps://username:password@mq.example.com:5671/virtualhost"
 
