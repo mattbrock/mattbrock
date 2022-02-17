@@ -26,4 +26,3 @@
       path: etc/variables.yml
       regex: '^ec2_staging_instance_public_dns:'
       line: "ec2_staging_instance_public_dns: {{ staging_instance.instances[0].public_dns_name }}"
-    when: staging_instance.changed
