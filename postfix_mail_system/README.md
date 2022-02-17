@@ -26,4 +26,4 @@ These are the accompanying config files and scripts for my blog article [buildin
 
 * _autoreply.pl_, _block_sasl_fail.sh_, _bouncedmail.py_, _mailqueues.sh_ - various scripts, installed in _/usr/local/bin/_.
 * _block_sasl_fail_, _mailqueues_ - cron files for above scripts, installed in _/etc/cron.d_.
-* _pflogsumm_ - cron file for pflogsumm, installed in _/etc/cron.daily_.
+* _pflogsumm_ - cron file for pflogsumm, installed in _/etc/cron.daily_. 
