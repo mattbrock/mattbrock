@@ -1,4 +1,6 @@
-# Provisioning and deployment of RabbitMQ with cert-manager on a Kubernetes cluster within GCP (Google Cloud Platform)
+# Automated provisioning and deployment of RabbitMQ with cert-manager on a Kubernetes cluster within GCP (Google Cloud Platform)
+
+**N.B. Use at your own risk!** These procedures will change and destroy your infrastructure. Only use if you understand what you are doing.
 
 Subfolders for each of the steps involved with setting up the cluster, deployments and services:
 
