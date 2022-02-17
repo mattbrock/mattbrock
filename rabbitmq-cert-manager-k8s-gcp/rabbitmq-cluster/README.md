@@ -74,4 +74,4 @@ Get the logs from the RabbitMQ cluster pod(s):
 
     kubectl delete -f cluster.yml
     kubectl delete configmap definitions
-    kubectl delete -f https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml
+    kubectl delete -f https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml 

@@ -71,4 +71,4 @@ Then create a token to log in to the Dashboard as an admin user:
     ADMIN_USER_TOKEN_VALUE=$(kubectl -n kube-system get secret "$ADMIN_USER_TOKEN_NAME" -o jsonpath='{.data.token}' | base64 --decode)
     echo "$ADMIN_USER_TOKEN_VALUE"
     
-Open the Kubernetes Dashboard in your browser [here](http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/), choose to log in with a token, then copy/paste the output from the above commands.
+Open the Kubernetes Dashboard in your browser [here](http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/), choose to log in with a token, then copy/paste the output from the above commands. 

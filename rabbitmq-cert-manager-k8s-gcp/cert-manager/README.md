@@ -72,4 +72,4 @@ It appears that RabbitMQ simply uses the updated certificate in the Secret witho
     kubectl delete secret rabbitmq-tls
     kubectl delete -f issuer.yml
     kubectl delete -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
-    kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.0/deploy/static/provider/cloud/deploy.yaml
+    kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.0/deploy/static/provider/cloud/deploy.yaml 

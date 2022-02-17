@@ -38,4 +38,4 @@ To get the logs for the app pods in order to ensure they're running correctly (c
 
 ## Deletion
 
-    kubectl delete -f my-app.yml
+    kubectl delete -f my-app.yml 
