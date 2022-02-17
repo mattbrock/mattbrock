@@ -1,0 +1,15 @@
+---
+additions:
+- kind: dns#resourceRecordSet
+  name: mq.example.com.
+  rrdatas:
+  - NEW_DATA
+  ttl: 60
+  type: A
+deletions:
+- kind: dns#resourceRecordSet
+  name: mq.example.com.
+  rrdatas:
+  - OLD_DATA
+  ttl: 60
+  type: A

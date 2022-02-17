@@ -1,0 +1,2 @@
+# Don't push private keys to GitHub
+artifact-registry.json*
