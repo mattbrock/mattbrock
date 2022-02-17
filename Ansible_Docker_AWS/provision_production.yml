@@ -1,0 +1,125 @@
+---
+- name: Provision ECS cluster and service with Docker image
+  hosts: localhost
+  connection: local
+  tasks:
+
+  - name: Import variables
+    include_vars: etc/variables.yml
+
+  - name: Create Target Group
+    elb_target_group:
+      name: "{{ app_name }}"
+      protocol: http
+      port: 8080
+      vpc_id: "{{ vpc_id }}"
+      state: present
+      modify_targets: no
+    register: target_group
+    when: ec2_sg_lb_id
+
+  - name: Create Application Load Balancer
+    elb_application_lb:
+      name: "{{ app_name }}"
+      security_groups: "{{ ec2_sg_lb_id }}"
+      subnets:
+      - "{{ vpc_subnet_id_1 }}"
+      - "{{ vpc_subnet_id_2 }}"
+      listeners:
+      - Protocol: HTTP
+        Port: 80
+        DefaultActions:
+        - Type: forward
+          TargetGroupName: "{{ app_name }}"
+        Rules:
+        - Conditions:
+          - Field: host-header
+            Values:
+            - "{{ route53_zone }}"
+          Priority: '1'
+          Actions:
+          - Type: redirect
+            RedirectConfig:
+              Host: "www.{{ route53_zone }}"
+              Protocol: "#{protocol}"
+              Port: "#{port}"
+              Path: "/#{path}"
+              Query: "#{query}"
+              StatusCode: "HTTP_301"
+    register: load_balancer
+
+  - name: Provision ECS cluster
+    ecs_cluster:
+      name: "{{ app_name }}"
+      state: present
+
+  - name: Add Docker Hub authentication to AWS Secrets Manager
+    aws_secret:
+      name: "{{ app_name }}"
+      state: present
+      secret_type: string
+      secret: "{ \"username\" : \"{{ docker_user }}\", \"password\" : \"{{ docker_pass }}\" }"
+    register: repo_string
+
+  #- meta: end_play
+      
+  - name: Create task execution role
+    iam_role:
+      name: "{{ app_name }}"
+      assume_role_policy_document: "{{ lookup('file','etc/trust_policy.json') }}"
+      #managed_policies:
+      #- "{{ task_execution_policy.iam_policy.arn }}"
+      state: present
+    register: task_execution_role
+
+  - name: Create task execution policy
+    iam_policy:
+      iam_type: role
+      iam_name: "{{ app_name }}"
+      policy_name: "{{ app_name }}"
+      policy_json: " {{ lookup( 'file', 'etc/task_execution_role_policy.json') }} "
+      state: present
+    #register: task_execution_policy
+
+  - name: Create ECS task definition
+    ecs_taskdefinition:
+      family: "{{ app_name }}"
+      containers:
+      - name: "{{ app_name }}"
+        image: "{{ docker_repo }}/{{ app_name }}"
+        memory: 256
+        cpu: 128
+        portMappings: 
+        - containerPort: 8080
+          hostPort: 8080
+        repositoryCredentials: 
+          credentialsParameter: "{{ repo_string.secret.arn }}"
+      launch_type: EC2
+      network_mode: awsvpc
+      state: present
+      execution_role_arn: "{{ task_execution_role.iam_role.arn }}"
+
+  - name: Provision ECS service
+    ecs_service:
+      name: "{{ app_name }}"
+      cluster: "{{ app_name }}"
+      task_definition: "{{ app_name }}"
+      desired_count: 3
+      network_configuration:
+        subnets:
+        - "{{ vpc_subnet_id_1 }}"
+        security_groups:
+        - "{{ ec2_sg_app_id }}"
+      load_balancers:
+      - targetGroupArn: "{{ load_balancer.load_balancer_arn }}"
+        containerName: "{{ app_name }}"
+        containerPort: "{{ 8080 }}"
+      state: present
+
+  #- name: Start ECS task
+  #  ecs_task:
+  #    operation: start
+  #    cluster: "{{ app_name }}"
+  #    task_definition: "{{ app_name }}"
+  #    state: present
+  #    
