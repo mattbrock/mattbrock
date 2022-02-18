@@ -46,10 +46,6 @@ Further instructions for deploying/using the cluster etc. are [here](https://www
 Update the DNS with the new external IP (if this initially fails it probably means you need to wait longer for the cluster to come up):
 
     ./dns.sh
- 
-**Note for future todo:** This currently has to use the same DNS name as ingress-nginx because otherwise the certificate can't be validated, so basically this is a bit of a hack. The solution is probably to use
-wildcard DNS so that ingress-nginx can respond from one DNS name and MQ can use a different DNS name, so that we don't have to keep swapping the same DNS name from one service to another. I think this means 
-setting up an issuer in cert-manager using something other than letsencrypt so we can have wildcard support. Needs further investigation and reworking.
 
 ## Test that RabbitMQ connections are working (optional)
 

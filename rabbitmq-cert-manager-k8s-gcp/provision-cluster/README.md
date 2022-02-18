@@ -16,9 +16,7 @@ To check details of the current configuration:
 
     gcloud config list
 
-### Initial GCP setup
-
-#### GCS buckets
+### GCS buckets
 
 A GCS bucket needs to exist for remote Terraform state/lock management. This appears to work on an account level, not on a project level, so it's best to identify the bucket accordingly. The bucket is currently named `iac-state` but this should be changed to a more meaningful name to avoid confusion between different projects used by the same account.
 
