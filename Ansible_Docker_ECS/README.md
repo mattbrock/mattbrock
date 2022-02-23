@@ -24,7 +24,7 @@ I created a very basic [Python webapp](https://github.com/mattbrock/simple_webap
 
 ### Configuring ECR Docker Credential Helper
 
-The method which worked best for me was to add a suitable "credHelper" section to my _~/.docker/config.json_ file:
+The method which worked best for me was to add a suitable "credHelpers" section to my _~/.docker/config.json_ file:
 
     "credHelpers": {
         "000000000000.dkr.ecr.eu-west-2.amazonaws.com": "ecr-login"
@@ -32,7 +32,7 @@ The method which worked best for me was to add a suitable "credHelper" section t
 
 (I've replaced my AWS account ID with zeros, but otherwise this is correct.)
 
-So, for me, the whole _~/.docker/config.json_ ended up looking like this. Yours may not be quite the same but hopefully it clarifies how to add the "credHelped" section near the end:
+So, for me, the whole _~/.docker/config.json_ ended up looking like this. Yours may not be quite the same but hopefully it clarifies how to add the "credHelpers" section near the end:
 
     {
         "auths": {

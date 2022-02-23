@@ -24,7 +24,7 @@ I created a very basic [Python webapp](https://github.com/mattbrock/simple_webap
 
 These playbooks are run in the standard way, i.e: 
 
-`ansible-playbook PLAYBOOK_NAME.yml`. 
+    ansible-playbook PLAYBOOK_NAME.yml
 
 Note that Step 4 requires the addition of `-i etc/inventory.aws_ec2.yml` to use the dynamic inventory, and also the addition of `-e 'ansible_python_interpreter=/usr/bin/python3'` to ensure it uses Python 3 on the Staging instance.
 
@@ -62,7 +62,7 @@ Once everything has been fully destroyed, it's safe to run the _delete\_all.yml_
 
 After building the Docker image in Step 1, if you want to run a local container from the image for initial testing purposes, you can use standard Docker commands for this:
 
-`docker run -d --name simple-webapp -p 8080:8080 my-repo/simple-webapp`
+    docker run -d --name simple-webapp -p 8080:8080 my-repo/simple-webapp
 
 (replacing "my-repo" with the name of your Docker Hub repo, and replacing "simple-webapp" as needed if you're running your own webapp.)
 
@@ -72,21 +72,21 @@ http://localhost:8080/
 
 To check the logs:
 
-`docker logs simple-webapp`
+    docker logs simple-webapp
 
 To stop the container:
 
-`docker stop simple-webapp`
+    docker stop simple-webapp
 
 To remove it:
 
-`docker rm simple-webapp`
+    docker rm simple-webapp
 
 ## Checking the Staging site
 
 To check the app on Staging once deployed in Step 4, you can get the Staging instance's public DNS via the AWS CLI with this command:
 
-`aws ec2 describe-instances --filters "Name=tag:Environment,Values=Staging" --query "Reservations[*].Instances[*].PublicDnsName"`
+    aws ec2 describe-instances --filters "Name=tag:Environment,Values=Staging" --query "Reservations[*].Instances[*].PublicDnsName"
 
 Then check it in your browser at:
 
@@ -106,11 +106,11 @@ Once Step 5 has been run to create the DNS entry (and you've waited a little whi
 
 To run ad hoc commands (e.g. `uptime` in this example) remotely with Ansible (without playbooks) you can use the `ansible` command as follows:
 
-`ansible -i etc/inventory.aws_ec2.yml -u ec2-user --private-key etc/ec2_key.pem tag_Environment_Staging -m shell -a uptime`
+    ansible -i etc/inventory.aws_ec2.yml -u ec2-user --private-key etc/ec2_key.pem tag_Environment_Staging -m shell -a uptime
 
 You can use this method to check the Docker webapp logs as follows:
 
-`ansible -i etc/inventory.aws_ec2.yml -u ec2-user --private-key etc/ec2_key.pem tag_Environment_Staging -m shell -a "docker logs simple-webapp"`
+    ansible -i etc/inventory.aws_ec2.yml -u ec2-user --private-key etc/ec2_key.pem tag_Environment_Staging -m shell -a "docker logs simple-webapp"
 
 (replacing `simple-webapp` with the correct app name if you're using your own webapp.)
 
@@ -118,4 +118,4 @@ You can use this method to check the Docker webapp logs as follows:
 
 If you need to SSH into the Staging instance once it's running after Step 3, get the public DNS name using the command above, then SSH in with:
 
-`ssh -i etc/ec2_key.pem ec2-user@ec2-xxx-xxx-xxx-xxx.xx-xxxx-x.compute.amazonaws.com` 
+    ssh -i etc/ec2_key.pem ec2-user@ec2-xxx-xxx-xxx-xxx.xx-xxxx-x.compute.amazonaws.com
