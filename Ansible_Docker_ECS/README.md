@@ -1,4 +1,4 @@
-# Ansible ECS provisioning with Docker containers
+# Ansible ECS provisioning and deployment with Docker containers
 
 This is a suite of Ansible playbooks to provision an ECS (Elastic Container Service) cluster on AWS, running a webapp deployed on Docker containers in the cluster and load balanced from an ALB, with the Docker image for the app pulled from an ECR (Elastic Container Registry) repository. 
 
