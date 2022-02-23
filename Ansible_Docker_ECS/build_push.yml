@@ -1,0 +1,34 @@
+---
+- name: Build Docker image and push to ECR repository
+  hosts: localhost
+  connection: local
+  tasks:
+
+  - name: Import variables
+    include_vars: etc/variables.yml
+
+  - name: Get app from GitHub
+    git:
+      repo: "https://github.com/mattbrock/simple_webapp.git"
+      dest: "docker/{{ app_name }}"
+      force: yes
+
+  - name: Create Amazon ECR repository
+    ecs_ecr:
+      name: "{{ app_name }}"
+    register: ecr_repo
+
+  - name: Update variables file with repo URI
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ecr_repo:'
+      line: "ecr_repo: {{ ecr_repo.repository.repositoryUri }}"
+
+  - name: Build Docker image and push to AWS ECR repository
+    docker_image:
+      build:
+        path: ./docker
+      name: "{{ ecr_repo.repository.repositoryUri }}:latest"
+      push: yes
+      source: build
+      force_source: yes

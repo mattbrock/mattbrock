@@ -19,6 +19,7 @@
       image_id: "{{ ec2_al2_image_id }}"
       tags:
         Environment: Staging
+      wait: yes
     register: staging_instance
 
   - name: Update variables file with instance public DNS

@@ -7,7 +7,7 @@ Freelance System Administrator and DevOps Engineer based in London, UK with 25 y
 This is a general repository for my various scripts, playbooks, plugins and config examples, most of which have accompanying articles describing their usage on [my blog](https://cetre.co.uk/blog/).
 
 * [Ansible_AWS_provisioning](Ansible_AWS_provisioning) - Ansible playbooks to provision an entire AWS infrastructure with a Staging instance and an auto-scaled load-balanced Production environment.
-* [Ansible_Docker_AWS](Ansible_Docker_AWS) - Ansible playbooks to provision an AWS infrastructure with a Staging instance, and to deploy a webapp on the Staging instance which runs in a Docker container.
+* [Ansible_Docker_EC2](Ansible_Docker_EC2) - Ansible playbooks to provision a Staging instance on EC2, and to deploy a webapp there which runs in a Docker container.
 * [Ansible_RHEL_CentOS_hardening](Ansible_RHEL_CentOS_hardening) - Ansible playbooks for security hardening on RHEL 7 and CentOS 7 servers.
 * [check_hp_ssd](check_hp_ssd) - Nagios plugin to check SSDs on HP ProLiant DL360 servers and other similar ProLiant hardware.
 * [convert-facebook-likes-to-csv](convert-facebook-likes-to-csv) - Perl script to convert all liked pages on Facebook to a CSV file for import into a spreadsheet.

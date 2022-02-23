@@ -21,7 +21,8 @@
       state: absent
       filters:
         instance-state-name: running
-      wait: no
+        tag:Name: Staging
+      wait: yes
 
   - name: Delete Security Group for app instances
     ec2_group:

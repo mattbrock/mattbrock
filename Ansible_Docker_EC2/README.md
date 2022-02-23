@@ -1,20 +1,23 @@
-# Ansible AWS provisioning with Docker containers
+# Ansible EC2 provisioning with Docker containers
 
-This is a suite of Ansible playbooks to provision a basic AWS infrastructure with a Staging instance, and to deploy a webapp on the Staging instance which runs in a Docker container. Firstly a Docker image is built locally and pushed to a private Docker Hub repository, then the EC2 SSH key and Security Groups are created, then a Staging instance is provisioned, then the Docker image is pulled on the Staging instance, then a Docker container is started from the image with nginx set up on the Staging instance to proxy web requests to the container. Finally, a DNS entry is added for the Staging instance.
+This is a suite of Ansible playbooks to provision a basic AWS infrastructure on EC2 with a Staging instance, and to deploy a webapp on the Staging instance which runs in a Docker container. Firstly a Docker image is built locally and pushed to a private Docker Hub repository, then the EC2 SSH key and Security Groups are created, then a Staging instance is provisioned, then the Docker image is pulled on the Staging instance, then a Docker container is started from the image with nginx set up on the Staging instance to proxy web requests to the container. Finally, a DNS entry is added for the Staging instance.
 
 This is a simple Ansible framework to serve as a basis for building Docker images for your webapp and deploying them as containers on Amazon EC2. It can be expanded in multiple ways, the most obvious being to add an auto-scaled Production environment with Docker containers. (For Ansible playbooks suitable for provisioning an auto-scaled Production environment, check out [this suite of playbooks](../Ansible_AWS_provisioning) I created previously.) More complex apps could be split across multiple Docker containers for handling front-end and back-end components, so this could also be added as needed.
 
-CentOS 7 is used for the Docker container, but this can be changed to a different Linux distro if desired.
+CentOS 7 is used for the Docker container, but this can be changed to a different Linux distro if desired. Amazon Linux 2 is used for the Staging instance on EC2.
 
 I created a very basic [Python webapp](https://github.com/mattbrock/simple_webapp) to use as an example for the deployment here, but you can replace that with your own webapp should you so wish.
 
+**N.B.** Until you've tested this and honed it to your needs, **run it in a completely separate environment for safety reasons**, otherwise there is potential here for accidental destruction of parts of existing environments. Create a separate VPC specifically for this, or even use an entirely separate AWS account.
+
 ## Installation/setup
 
-1. You'll need an [AWS](https://aws.amazon.com/) account with a [VPC](https://aws.amazon.com/vpc/) set up, and with a DNS domain set up in [Route 53](https://aws.amazon.com/route53/).
+1. You'll need an [AWS](https://aws.amazon.com/) account with a [VPC](https://aws.amazon.com/vpc/) set up, and with a DNS domain set up in [Route 53](https://aws.amazon.com/route53/). 
 1. Install and configure the latest version of the [AWS CLI](https://aws.amazon.com/cli/). The settings in the AWS CLI configuration files are needed by the Ansible modules in these playbooks. Also, the Ansible modules don't yet support target tracking auto-scaling policies, so there is one task which needs to run the AWS CLI as a local external command for that purpose. If you're using a Mac, I'd recommend using [Homebrew](https://brew.sh/) as the simplest way of installing and managing the AWS CLI.
 1. If you don't already have it, you'll need [Python 3](https://www.python.org/). You'll also need the [boto](https://pypi.org/project/boto/) and [boto3](https://pypi.org/project/boto3/) Python modules (for Ansible modules and dynamic inventory) which can be installed via [pip](https://pypi.org/project/pip/).
 1. [Ansible](https://www.ansible.com/) needs to be installed and configured. Again, if you're on a Mac, using Homebrew for this is probably best.
 1. Docker needs to be installed and running. For this it's probably best to refer to the [instructions on the Docker website](https://www.docker.com/get-started).
+1. A Docker account is required, and a private repository needs to be set up on [Docker Hub](https://hub.docker.com/).
 1. Copy _[etc/variables\_template.yml](etc/variables_template.yml)_ to _etc/variables.yml_ and update the static variables at the top for your own environment setup.
 
 ## Usage
@@ -40,6 +43,8 @@ Running later playbooks without having run the earlier ones will fail due to mis
 
 Running all five playbooks in succession will set up the entire infrastructure from start to finish.
 
+### Redeployment
+
 Once the Staging environment is up and running, any changes to the app can be rebuilt and redeployed to Staging by running Steps 1 and 4 again.
 
 ## Playbooks for deprovisioning
@@ -47,7 +52,7 @@ Once the Staging environment is up and running, any changes to the app can be re
 1. _[destroy\_all.yml](destroy\_all.yml)_ - destroys the entire AWS infrastructure. 
 1. _[delete\_all.yml](delete\_all.yml)_ - clears all dynamic variables in the _etc/variables.yml_ file, deletes the EC2 SSH key, removes the local Docker image, and deletes the local webapp repo in the _[docker](docker)_ directory.
 
-**USE _destroy\_all.yml_ WITH EXTREME CAUTION!** If your shell is configured for the wrong AWS account, you could potentially cause serious damage with this. Always check before running that your shell is configured for the correct environment and that you are absolutely 100 percent sure you want to do this. Don't say I didn't warn you!
+**USE _destroy\_all.yml_ WITH EXTREME CAUTION!** If you're not operating in a completely separate environment, or if your shell is configured for the wrong AWS account, you could potentially cause serious damage with this. Always check before running that you are working in the correct isolated environment and that you are absolutely 100 percent sure you want to do this. Don't say I didn't warn you!
 
 Due to the fact that it might take some time to deprovision certain elements, some tasks in _destroy\_all.yml_ may initially fail. This should be nothing to worry about. If it happens, wait for a little while then run the playbook again until all tasks have succeeded.
 
