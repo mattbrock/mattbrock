@@ -1,0 +1,138 @@
+---
+- name: Provision ECS cluster, task definition and service with Docker container, including Target Group + ALB, and ECS container instances
+  hosts: localhost
+  connection: local
+  tasks:
+
+  - name: Import variables
+    include_vars: etc/variables.yml
+
+  - name: Create Target Group
+    elb_target_group:
+      name: "{{ app_name }}"
+      protocol: http
+      port: 80
+      vpc_id: "{{ vpc_id }}"
+      state: present
+      modify_targets: no
+    register: target_group
+
+  - name: Create Application Load Balancer
+    elb_application_lb:
+      name: "{{ app_name }}"
+      security_groups: "{{ ec2_sg_lb_id }}"
+      subnets:
+      - "{{ vpc_subnet_id_1 }}"
+      - "{{ vpc_subnet_id_2 }}"
+      listeners:
+      - Protocol: HTTP
+        Port: 80
+        DefaultActions:
+        - Type: forward
+          TargetGroupName: "{{ app_name }}"
+        Rules:
+        - Conditions:
+          - Field: host-header
+            Values:
+            - "{{ route53_zone }}"
+          Priority: '1'
+          Actions:
+          - Type: redirect
+            RedirectConfig:
+              Host: "www.{{ route53_zone }}"
+              Protocol: "#{protocol}"
+              Port: "#{port}"
+              Path: "/#{path}"
+              Query: "#{query}"
+              StatusCode: "HTTP_301"
+    register: load_balancer
+
+  - name: Update variables file with ELB DNS
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^elb_dns:'
+      line: "elb_dns: {{ load_balancer.dns_name }}"
+
+  - name: Update variables file with ELB hosted zone ID
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^elb_zone_id:'
+      line: "elb_zone_id: {{ load_balancer.canonical_hosted_zone_id }}"
+
+  - name: Create ECS Instance Role for EC2 Production instances
+    iam_role:
+      name: ecsInstanceRole
+      assume_role_policy_document: "{{ lookup('file','etc/ecs_instance_role_policy.json') }}"
+      managed_policies: 
+      - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+      create_instance_profile: yes
+      state: present
+    register: ecs_instance_role
+    
+  # Couldn't find any way with Ansible plugins to link the role to the instance profile
+  # so we do it like this. It's messy but it works
+  - name: Link ECS Instance Role to Instance Profile
+    command: aws iam add-role-to-instance-profile --role-name ecsInstanceRole --instance-profile-name ecsInstanceRole
+    ignore_errors: yes
+
+  # Specify the ECS Instance Role and add the User Data so ECS knows
+  # to use this instance for the ECS cluster
+  - name: Launch an ECS container instance on EC2 for the cluster to run tasks on
+    ec2_instance:
+      name: ECS
+      key_name: "{{ app_name }}"
+      vpc_subnet_id: "{{ vpc_subnet_id_1 }}"
+      instance_type: t2.micro
+      instance_role: "{{ ecs_instance_role.role_name }}"
+      security_group: "{{ ec2_sg_app_id }}"
+      network:
+        assign_public_ip: true
+      image_id: "{{ ec2_ecs_image_id }}"
+      tags:
+        Environment: Production
+      user_data: |
+        #!/bin/bash
+        echo ECS_CLUSTER={{ app_name }} >> /etc/ecs/ecs.config
+      wait: yes
+
+  - name: Provision ECS cluster
+    ecs_cluster:
+      name: "{{ app_name }}"
+      state: present
+
+  # Set hostPort to 0 to enable dynamic port mappings from load balancer
+  #
+  # force_create ensures new revision when app has changed in repo
+  # and causes service to redeploy as rolling deployment with new task revision
+  - name: Create ECS task definition with dynamic port mappings from load balancer (setting hostPort to 0 to enable this)
+    ecs_taskdefinition:
+      family: "{{ app_name }}"
+      containers:
+      - name: "{{ app_name }}"
+        image: "{{ ecr_repo }}:latest"
+        memory: 128
+        portMappings: 
+        - containerPort: 8080
+          hostPort: 0
+      launch_type: EC2
+      network_mode: default
+      state: present
+      force_create: yes
+
+  - name: Pause is necessary before provisioning service, possibly for AWS to finish creating service-linked IAM role for ECS
+    pause:
+      seconds: 30
+
+  - name: Provision ECS service
+    ecs_service:
+      name: "{{ app_name }}"
+      cluster: "{{ app_name }}"
+      task_definition: "{{ app_name }}"
+      desired_count: 1
+      launch_type: EC2
+      scheduling_strategy: REPLICA
+      load_balancers:
+      - targetGroupArn: "{{ target_group.target_group_arn }}"
+        containerName: "{{ app_name }}"
+        containerPort: "{{ 8080 }}"
+      state: present

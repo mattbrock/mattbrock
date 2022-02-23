@@ -1,0 +1,47 @@
+---
+- name: Provision SSH key and Security Groups
+  hosts: localhost
+  connection: local
+  tasks:
+
+  - name: Import variables
+    include_vars: etc/variables.yml
+
+  - name: Create EC2 SSH key
+    ec2_key:
+      name: "{{ app_name }}"
+    register: ec2_key
+
+  - name: Save EC2 SSH key to file
+    copy:
+      content: "{{ ec2_key.key.private_key }}"
+      dest: etc/ec2_key.pem
+      mode: 0600
+    when: ec2_key.changed
+
+  - name: Create Security Group for app instance
+    ec2_group:
+      name: EC2 App Servers
+      description: EC2 VPC Security Group for App Servers
+      vpc_id: "{{ vpc_id }}"
+      rules:
+      - proto: tcp
+        ports: 80
+        cidr_ip: 0.0.0.0/0
+        rule_desc: Allow app access to nginx from anywhere
+      - proto: tcp
+        ports: 8080
+        cidr_ip: "{{ my_ip }}/32"
+        rule_desc: Allow direct app access from my IP
+      - proto: tcp
+        ports: 22
+        cidr_ip: "{{ my_ip }}/32"
+        rule_desc: Allow SSH from my IP
+    register: ec2_sg_app
+
+  - name: Update variables file with Security Group ID
+    lineinfile:
+      path: etc/variables.yml
+      regex: '^ec2_sg_app_id:'
+      line: "ec2_sg_app_id: {{ ec2_sg_app.group_id }}"
+    when: ec2_sg_app.changed
