@@ -13,7 +13,7 @@ I created a very basic [Python webapp](https://github.com/mattbrock/simple_webap
 ## Installation/setup
 
 1. You'll need an [AWS](https://aws.amazon.com/) account with a [VPC](https://aws.amazon.com/vpc/) set up, and with a DNS domain set up in [Route 53](https://aws.amazon.com/route53/). 
-1. Install and configure the latest version of the [AWS CLI](https://aws.amazon.com/cli/). The settings in the AWS CLI configuration files are needed by the Ansible modules in these playbooks. Also, the Ansible modules don't yet support target tracking auto-scaling policies, so there is one task which needs to run the AWS CLI as a local external command for that purpose. If you're using a Mac, I'd recommend using [Homebrew](https://brew.sh/) as the simplest way of installing and managing the AWS CLI.
+1. Install and configure the latest version of the [AWS CLI](https://aws.amazon.com/cli/). The settings in the AWS CLI configuration files are needed by the Ansible modules in these playbooks. If you're using a Mac, I'd recommend using [Homebrew](https://brew.sh/) as the simplest way of installing and managing the AWS CLI.
 1. If you don't already have it, you'll need [Python 3](https://www.python.org/). You'll also need the [boto](https://pypi.org/project/boto/) and [boto3](https://pypi.org/project/boto3/) Python modules (for Ansible modules and dynamic inventory) which can be installed via [pip](https://pypi.org/project/pip/).
 1. [Ansible](https://www.ansible.com/) needs to be installed and configured. Again, if you're on a Mac, using Homebrew for this is probably best.
 1. Docker needs to be installed and running. For this it's probably best to refer to the [instructions on the Docker website](https://www.docker.com/get-started).
