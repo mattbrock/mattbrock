@@ -61,7 +61,7 @@ To deploy your own webapp instead of my [basic Python app](https://github.com/ma
 1. _[build\_push.yml](build\_push.yml)_ - pulls the webapp from GitHub, builds a Docker image using _[docker/Dockerfile](docker/Dockerfile)_ which runs the webapp, and pushes the image to a private ECR repository.
 1. _[provision\_key\_sg.yml](provision\_key\_sg.yml)_ - provisions an EC2 SSH key, and Security Groups for ECS container instances and ELB.
 1. _[provision\_production.yml](provision\_production.yml)_ - provisions Target Group and associated ALB (Application Load Balancer type of ELB) for load balancing the containers, provisions IAM setup for ECS instances, launches ECS container instance on EC2, provisions ECS cluster, and sets up ECS task definition and Service so the webapp containers deploy on the cluster using the Docker image in ECR.
-1. _[provision\_dns.yml](provision\_dns.yml)_ - provisions the DNS in Route 53 for the Staging instance; note that it may take a few minutes for the DNS to propagate before it becomes usable.
+1. _[provision\_dns.yml](provision\_dns.yml)_ - provisions the DNS in Route 53 for the ALB; note that it may take a few minutes for the DNS to propagate before it becomes usable.
 
 There are comments dotted about in the playbooks to help further explain certain aspects of what is going on.
 
