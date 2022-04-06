@@ -18,6 +18,7 @@ This is a general repository for my various scripts, playbooks, plugins and conf
 * [mongo-reclaim](mongo-reclaim) - reclaims storage on two-node MongoDB replica sets by clearing data on both nodes and forcing mongod to rebuild it.
 * [pacct-report](pacct-report) - sends a weekly email with a summary of user activity, login information and commands run.
 * [postfix_mail_system](postfix_mail_system) - accompanying config files and scripts for my blog article on building a Postfix-based mail system.
+* [PowerShell_AWS_Linux](PowerShell_AWS_Linux) - AWS Provisioning and Deployment with Linux EC2 instances using PowerShell
 * [rabbitmq-cert-manager-k8s-gcp](rabbitmq-cert-manager-k8s-gcp) - Automated provisioning and deployment of RabbitMQ with cert-manager on a Kubernetes cluster within GCP (Google Cloud Platform).
 * [reminders2txt](reminders2txt) - exports items from Reminders app on OS X to plaintext.
 * [vCard_photo_extractor](vCard_photo_extractor) - script to extract the contact photos from vCard/VCF files.
