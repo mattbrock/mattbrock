@@ -35,7 +35,7 @@ If necessary, run `pwsh` to enter PowerShell if you're on macOS or Linux, or sta
 
 ## Provisioning
 
-Run _[./provision.ps1](provision.ps1)_ to provision the instance and DNS. This will provision an SSH key pair and Security Group, then launch the EC2 instance, then set up a CNAME in the DNS pointing www._mydomain.com_ to the public DNS of the EC2 instance.
+Run _[./provision.ps1](provision.ps1)_ to provision the instance and DNS. This will provision an SSH key pair and Security Group, then launch the EC2 instance, then set up a CNAME in the DNS pointing `www.mydomain.com` to the public DNS of the EC2 instance.
 
 **N.B.** This script saves the private SSH key to _etc/$AppName.pem_. For the SSH deployment to work (see below) this file needs to have its permissions set to mode 0600, but there does not seem to be a standard way of achieving this in PowerShell. I've used a non-PowerShell `chmod` command in the script which will work on macOS and Linux.
 In Windows PowerShell this line will need to be commented out because `chmod` does not exist in that environment. If the permissions of this file prevent SSH deployment on Windows, you'll need to manually set the permissions before running _deploy.ps1_. If anyone knows of a better solution for solving this across all operating systems, let me know.
@@ -65,7 +65,7 @@ To check the webapp via the EC2 instance Public DNS:
 
 To check the webapp via the Route 53 DNS:
 
-    curl http://www._mydomain.com_/
+    curl http://www.mydomain.com/
 
 ## Checking the logs
 
