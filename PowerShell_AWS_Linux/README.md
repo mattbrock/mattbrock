@@ -44,7 +44,7 @@ In Windows PowerShell this line will need to be commented out because `chmod` do
 
 Run _[./deploy.ps1](deploy.ps1)_ to deploy the webapp on the EC2 instance. This does the following via SSH connections:
 
-* Downloads my basic Python webapp [simple-webapp](https://github.com/mattbrock/simple_webapp) to the instance and unzips it to the necessary location.
+* Downloads my basic Python webapp [simple_webapp](https://github.com/mattbrock/simple_webapp) to the instance and unzips it to the necessary location.
 * Installs the systemd service script for the webapp, then enables it and starts it as a service running on port 8080.
 * Installs nginx and downloads an nginx config file which proxies all incoming requests on port 80 to the webapp on port 8080.
 * Enables nginx and starts it as a service running on port 80.
