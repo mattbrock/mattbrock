@@ -1,7 +1,0 @@
-# Reject localhost
-localhost                       REJECT Invalid name
-localhost.localdomain           REJECT Invalid name
-# Reject other odd things commonly used by spammers
-friend                          REJECT Invalid name
-# Reject if HELO contains our domain
-company.com               	REJECT Invalid name

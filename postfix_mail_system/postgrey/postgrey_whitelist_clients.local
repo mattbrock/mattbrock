@@ -1,4 +1,0 @@
-# Clients that should not be greylisted.  See postgrey(8).
-
-# Hotmail emails emanate from hundreds and hundreds of these
-/^mail-[a-z0-9]+\.outbound\.protection\.outlook\.com$/

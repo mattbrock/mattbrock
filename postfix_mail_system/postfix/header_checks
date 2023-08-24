@@ -1,4 +1,0 @@
-# Strip internal headers on outgoing mail for privacy/security
-/^Received: (by|from) .*\.internal\.company\.com/ IGNORE
-# Add subject lines to mail logs
-/^[Ss]ubject:/ WARN

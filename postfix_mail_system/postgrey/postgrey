@@ -1,1 +1,0 @@
-POSTGREY_OPTS="--auto-whitelist-clients --delay=300"
