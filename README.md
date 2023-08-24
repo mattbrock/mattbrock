@@ -11,7 +11,7 @@ My most recent and useful projects and tutorials now have their own separate rep
 * [powershell-aws-linux](https://github.com/mattbrock/powershell-aws-linux) - AWS Provisioning and Deployment with Linux EC2 instances using PowerShell.
 * [ansible-docker-ecs](https://github.com/mattbrock/ansible-docker-ecs) - Ansible playbooks to provision an ECS cluster on AWS, running a webapp on Docker containers in the cluster and load balanced from an ALB, with the Docker image pulled from ECR.
 * [ansible-docker-ec2](https://github.com/mattbrock/ansible-docker-ec2) - Ansible playbooks to provision a Staging instance on EC2, and to deploy a webapp there which runs in a Docker container.
-* [rabbitmq-cert-manager-k8s-gcp](rabbitmq-cert-manager-k8s-gcp) - automated provisioning and deployment of RabbitMQ with cert-manager on a Kubernetes cluster within GCP (Google Cloud Platform).
+* [rabbitmq-cert-manager-k8s-gcp](https://github.com/mattbrock/rabbitmq-cert-manager-k8s-gcp) - automated provisioning and deployment of RabbitMQ with cert-manager on a Kubernetes cluster within GCP (Google Cloud Platform).
 * [ansible-aws-provisioning](https://github.com/mattbrock/ansible-aws-provisioning) - Ansible playbooks to provision an entire AWS infrastructure with a Staging instance and an auto-scaled load-balanced Production environment.
 * [ansible-rhel_centos-hardening](https://github.com/mattbrock/ansible-rhel-centos-hardening) - Ansible playbooks for security hardening on RHEL 7 and CentOS 7 servers.
 * [postfix-mail-system](https://github.com/mattbrock/postfix-mail-system) - accompanying config files and scripts for my blog article on building a Postfix-based mail system.
