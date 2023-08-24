@@ -26,7 +26,6 @@ This remains as a general repository for various old scripts, plugins and config
 * [mac-detector](mac-detector) - scans local network for new MAC addresses and reports accordingly.
 * [mongo-reclaim](mongo-reclaim) - reclaims storage on two-node MongoDB replica sets by clearing data on both nodes and forcing mongod to rebuild it.
 * [pacct-report](pacct-report) - sends a weekly email with a summary of user activity, login information and commands run.
-
 * [reminders2txt](reminders2txt) - exports items from Reminders app on OS X to plaintext.
 * [vCard_photo_extractor](vCard_photo_extractor) - script to extract the contact photos from vCard/VCF files.
 * [x-forwarded-for_webtraffic](x-forwarded-for_webtraffic) - provides a continuously updating display of client IP addresses on a web server using X-Forwarded-For.
