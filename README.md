@@ -1,8 +1,8 @@
 # Matt Brock
 
-Freelance DevOps Engineer, Platform Engineer and Site Reliability Engineer, with an extensive Linux SysAdmin and Infrastructure background.
+Freelance DevOps Engineer: over 10 years of cloud; 25 years of infrastructure engineering and Linux system administration.
 
-* My consultancy and freelance services: [CETRE DevOps, Platform Engineering and Site Reliability Engineering](https://www.cetre.co.uk/)
+* My [consultancy and freelance services](https://www.cetre.co.uk/).
 
 My most recent and useful projects and tutorials now have their own separate repositories. Most of these have accompanying articles describing their usage on [my blog](https://blog.cetre.co.uk):
 
