@@ -4,7 +4,7 @@ Freelance DevOps Engineer: over 10 years of cloud; 25 years of infrastructure en
 
 I've provided engineering work and consultancy services for two dozen customers since 2011. I specialise in helping clients with: DevOps; IaC; CI/CD; automation; site reliability & monitoring; security; cloud & bare-metal; containers & virtualisation; scaling, redundancy & DR; infrastructure migrations; cost management.
 
-More details on my consultancy and freelance services are [here](https://www.cetre.co.uk).
+More details on my consultancy and freelance services can be found on [my website](https://www.cetre.co.uk).
 
 My most recent and useful projects and tutorials now have their own separate repositories. Most of these have accompanying articles describing their usage on [my blog](https://blog.cetre.co.uk):
 
