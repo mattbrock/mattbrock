@@ -9,6 +9,7 @@ More details on my consultancy and freelance services can be found on [my websit
 My most recent and useful projects and tutorials now have their own separate repositories. Most of these have accompanying articles describing their usage on [my blog](https://blog.cetre.co.uk):
 
 * [k8s-minikube-eks](https://github.com/mattbrock/k8s-minikube-eks) - create a Kubernetes cluster with web app proxied via nginx, with two Nodes, backend Deployment With ClusterIP, and frontend Deployment with LoadBalancer.
+* [spotilike](https://github.com/mattbrock/spotilike) - like the currently playing track in Spotify.
 * [genrify](https://github.com/mattbrock/genrify) - select tracks from Saved Albums or Playlists on Spotify based on Artist Genre and add them to Queue or to a new Playlist.
 * [powershell-aws-linux](https://github.com/mattbrock/powershell-aws-linux) - AWS Provisioning and Deployment with Linux EC2 instances using PowerShell.
 * [ansible-docker-ecs](https://github.com/mattbrock/ansible-docker-ecs) - Ansible playbooks to provision an ECS cluster on AWS, running a webapp on Docker containers in the cluster and load balanced from an ALB, with the Docker image pulled from ECR.
